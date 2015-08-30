@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/components/bootstrap/dist/css/bootstrap.css'/>
+
+  <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="btn-group" role="group" aria-label="...">
+    <button type="button" class="btn btn-default">Forward</button>
+    <button type="button" class="btn btn-default">Left - one step</button>
+    <button type="button" class="btn btn-default">Right - one step</button>
+    <button type="button" class="btn btn-default">B - drive in reverse</button>
+    <button type="button" class="btn btn-default">S - Stop</button>
+    <button type="button" class="btn btn-default">Rotate left</button>
+    <button type="button" class="btn btn-default">Rotate rigth</button>
+  </div>
+
+  <div class="jumbotron">
+    <h1>Rally script</h1>
+    <div class="chart" data-percent="73" data-scale-color="#ffb400">73%</div>
+    <div class="chart" data-percent="43" data-scale-color="#ffb400">43%</div>
+
+  </div>
+
+
+</div>
+
+
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/components/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
+
+<script>
+  $(function() {
+    $('.chart').easyPieChart({
+      //your options goes here
+    });
+  });
+</script>
+</body>
+</html>
