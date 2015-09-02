@@ -22,6 +22,8 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+
+
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -29,6 +31,24 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+var io= require('socket.io').listen(server);
+
+io.sockets.on('connection', function(socket) {
+    console.log("Socket Connected");
+
+    socket.on('xmessage', function(data) {
+        console.log(data);
+        socket.emit('receive', data);
+    });
+
+    var x = 0;
+    setInterval(function () {
+        console.log("interval",x);
+        socket.emit('xmessage', x++);
+    }, 1500);
+});
+
 
 /**
  * Normalize a port into a number, string, or false.
@@ -89,9 +109,9 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 
-   browserSync({
-      proxy: 'localhost:' + addr.port,
-      files: ['public/**/*.{js,css}']
-    });
+//   browserSync({
+//      proxy: 'localhost:' + addr.port,
+//      files: ['public/**/*.{js,css}']
+//    });
 
 }

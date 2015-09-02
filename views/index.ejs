@@ -34,6 +34,14 @@
 <script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/components/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  socket.on('xmessage', function(msg){
+    console.log('message: ' + msg);
+  });
+
+</script>
 
 <script>
   $(function() {
