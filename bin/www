@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('rally_dashboard:server');
 var http = require('http');
 var browserSync = require('browser-sync');
+var mqtt = require('mqtt');
 
 /**
  * Get port from environment and store in Express.
@@ -32,20 +33,7 @@ server.on('listening', onListening);
 
 var io = require('socket.io').listen(server);
 
-io.sockets.on('connection', function(socket) {
-    console.log("Socket Connected");
 
-    socket.on('xmessage', function(data) {
-        console.log(data);
-        socket.emit('receive', data);
-    });
-
-    var x = 0;
-    setInterval(function () {
-        console.log("interval",x);
-        socket.emit('xmessage', x++);
-    }, 1500);
-});
 
 
 /**
@@ -107,9 +95,80 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 
+  var options = {port: 1883, host: 'localhost'}
+  var client = mqtt.connect(options);
+  var topic = 'fullstackfest/car/#';
+
+
+  console.log("Waiting for MQTT connection");
+  client.on('connect', function () {
+    console.log("Connected to mqtt");
+    client.subscribe(topic);
+    console.log('Subscribing to ',topic);
+
+    io.sockets.on('connection', function(socket) {
+      console.log("Socket Connected");
+
+      socket.on('car_data_out', function(data) {
+          console.log('car_data_out',data);
+
+      });
+
+      var handler = MessageHandler();
+
+      client.on('message', function (topic, message) {
+        console.log("Message received on" , topic);
+        var data = handler.make_package(topic,message);
+        socket.emit('car_data', data);
+        console.log('$',data);
+      });
+
+      var x = 0;
+      setInterval(function () {
+          socket.emit('heartbeat', x++);
+      }, 1500);
+
+    });
+
+ });
+
+
+
+
+
    browserSync({
       proxy: 'localhost:' + addr.port,
       files: ['public/**/*.{js,css}']
     });
 
 }
+
+
+function MessageHandler()
+{
+  var factory = {};
+  function transform_message(message){
+    var rc = {};
+    if (message) {
+      rc = JSON.parse(message.toString());
+    }
+    return rc;
+  }
+
+  factory.make_package = function(topic,message){
+    var data = topic.split("/");
+    var package = {
+      type: data[1],
+      car: data[2],
+      action: data[3]
+    };
+
+    if (data[4]) package.code = data[4];
+
+    package.payload = transform_message(message);
+    return package;
+  };
+
+  return factory;
+}
+

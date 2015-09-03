@@ -64,9 +64,13 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
-  socket.on('xmessage', function (msg) {
-    console.log('message: ' + msg);
+  socket.on('heartbeat', function (msg) {
+    console.log('heartbeat: ' + msg);
     $('#direction-value').text(msg);
+  });
+
+  socket.on('car_data', function (msg) {
+    console.log('car_data: ' + msg);
   });
 
 </script>
