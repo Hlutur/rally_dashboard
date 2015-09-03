@@ -10,45 +10,66 @@
 </head>
 <body>
 <div class="container-fluid">
-  <div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default">Forward</button>
-    <button type="button" class="btn btn-default">Left - one step</button>
-    <button type="button" class="btn btn-default">Right - one step</button>
-    <button type="button" class="btn btn-default">B - drive in reverse</button>
-    <button type="button" class="btn btn-default">S - Stop</button>
-    <button type="button" class="btn btn-default">Rotate left</button>
-    <button type="button" class="btn btn-default">Rotate rigth</button>
+  <div class="row">
+    <div class="jumbotron">
+      <h1>Rally script</h1>
+    </div>
   </div>
 
-  <div class="jumbotron">
-    <h1>Rally script</h1>
-    <div class="chart" data-percent="73" data-scale-color="#ffb400">73%</div>
-    <div class="chart" data-percent="43" data-scale-color="#ffb400">43%</div>
-
+  <div class="row">
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default">Forward</button>
+      <button type="button" class="btn btn-default">Left - one step</button>
+      <button type="button" class="btn btn-default">Right - one step</button>
+      <button type="button" class="btn btn-default">B - drive in reverse</button>
+      <button type="button" class="btn btn-default">S - Stop</button>
+      <button type="button" class="btn btn-default">Rotate left</button>
+      <button type="button" class="btn btn-default">Rotate right</button>
+    </div>
   </div>
 
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-4 col-md-3">
+      <div class="widget-number">
+        <h1 class="title" id="direction-label">Direction</h1>
+
+        <h2 class="value" id="direction-value">5</h2>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-3">
+
+      <div class="widget-number">
+        <h1 class="title" id="heading-label">Heading</h1>
+
+        <h2 class="value" id="heading-value">5</h2>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-3">
+
+      <div class="widget-number">
+        <h1 class="title" id="distance-label">Distance</h1>
+
+        <h2 class="value" id="distance-value">10</h2>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 
 
 <script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/components/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
-  socket.on('xmessage', function(msg){
+  socket.on('xmessage', function (msg) {
     console.log('message: ' + msg);
+    $('#direction-value').text(msg);
   });
 
 </script>
 
-<script>
-  $(function() {
-    $('.chart').easyPieChart({
-      //your options goes here
-    });
-  });
-</script>
 </body>
 </html>
