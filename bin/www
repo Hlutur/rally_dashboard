@@ -34,8 +34,6 @@ server.on('listening', onListening);
 var io = require('socket.io').listen(server);
 
 
-
-
 /**
  * Normalize a port into a number, string, or false.
  */
@@ -97,43 +95,35 @@ function onListening() {
 
   var options = {port: 1883, host: 'localhost'}
   var client = mqtt.connect(options);
-  var topic = 'fullstackfest/car/Turtle/#';
+  var car_name='Turtle';
 
+  var topic = 'fullstackfest/car/'+car_name+'/#';
 
   console.log("Waiting for MQTT connection");
   client.on('connect', function () {
     console.log("Connected to mqtt");
     client.subscribe(topic);
+
     console.log('Subscribing to ',topic);
 
     io.sockets.on('connection', function(socket) {
       console.log("Socket Connected");
 
       socket.on('car_data_out', function(data) {
-          console.log('car_data_out',data);
-
+          client.publish('fullstack/car/'+car_name+'/cmd', data);
       });
 
       var handler = MessageHandler();
 
       client.on('message', function (topic, message) {
-        console.log("Message received on" , topic);
-        var data = handler.make_package(topic,message);
-        socket.emit('car_data', data);
-        console.log('$',data);
+        socket.emit('car_data',  handler.make_package(topic,message));
       });
 
       var x = 0;
-      setInterval(function () {
-          socket.emit('heartbeat', x++);
-      }, 1500);
-
+      setInterval(function () {socket.emit('heartbeat', x++);}, 1500);
     });
 
  });
-
-
-
 
 
    browserSync({

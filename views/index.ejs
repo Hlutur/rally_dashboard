@@ -17,17 +17,33 @@
   </div>
 
   <div class="row">
-    <div class="btn-group" role="group" aria-label="...">
-      <button type="button" class="btn btn-default">Forward</button>
-      <button type="button" class="btn btn-default">Left - one step</button>
-      <button type="button" class="btn btn-default">Right - one step</button>
-      <button type="button" class="btn btn-default">B - drive in reverse</button>
-      <button type="button" class="btn btn-default">S - Stop</button>
-      <button type="button" class="btn btn-default">Rotate left</button>
-      <button type="button" class="btn btn-default">Rotate right</button>
+    <div class="col-xs-12">
+      <div class="btn-group" role="group" aria-label="direct commands">
+        <button type="button" class="btn btn-default car_action" data="f">Forward</button>
+        <button type="button" class="btn btn-default car_action" data="l">Left - one step</button>
+        <button type="button" class="btn btn-default car_action" data="r">Right - one step</button>
+        <button type="button" class="btn btn-default car_action" data="b">B - drive in reverse</button>
+        <button type="button" class="btn btn-default car_action" data="s">S - Stop</button>
+      </div>
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-xs-3">
+      Pattern commands:
+    </div>
+    <div class="col-xs-9">
+      <div class="btn-group" role="group" aria-label="Pattern commands">
+        <button type="button" class="btn btn-default car_pat_action" data="<">Rotate left until</button>
+        <button type="button" class="btn btn-default car_pat_action" data=">">Rotate right until</button>
+      </div>
+
+      <input type="text" class="pattern_input" id="pattern_1" value=""></input>
+      <input type="text" class="pattern_input" id="pattern_2" value=""></input>
+      <input type="text" class="pattern_input" id="pattern_3" value=""></input>
+
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-xs-12 col-sm-4 col-md-3">
@@ -65,12 +81,12 @@
 <script>
   var socket = io();
   socket.on('heartbeat', function (msg) {
-    console.log('heartbeat: ' + msg);
+    //console.log('heartbeat: ' + msg);
     $('#direction-value').text(msg);
   });
 
   socket.on('car_data', function (msg) {
-    switch(msg.action){
+    switch (msg.action) {
       case 'heading':
         $('#heading-value').text(msg.payload.deg.toFixed(0));
         break;
@@ -86,9 +102,20 @@
 
     }
 
-
-    console.log('car_data: ' + JSON.stringify(msg));
+    // console.log('car_data: ' + JSON.stringify(msg));
   });
+
+  $('.car_action').click(function (event) {
+    console.log("Action clicked ", $(event.target).attr("data"));
+    socket.emit('car_data_out', {car_name: 'Turtle', command: $(event.target).attr("data")});
+  });
+
+  $('.car_pat_action').click(function (event) {
+    var pattern = $('#pattern_1').val() + $('#pattern_2').val() + $('#pattern_3').val();
+    console.log("Pattern action clicked ", $(event.target).attr("data"),' pattrn='+pattern);
+    socket.emit('car_data_out', {car_name: 'Turtle', command: $(event.target).attr("data")+pattern});
+  });
+
 
 </script>
 
