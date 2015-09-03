@@ -97,7 +97,7 @@ function onListening() {
 
   var options = {port: 1883, host: 'localhost'}
   var client = mqtt.connect(options);
-  var topic = 'fullstackfest/car/#';
+  var topic = 'fullstackfest/car/Turtle/#';
 
 
   console.log("Waiting for MQTT connection");

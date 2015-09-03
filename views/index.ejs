@@ -32,9 +32,9 @@
   <div class="row">
     <div class="col-xs-12 col-sm-4 col-md-3">
       <div class="widget-number">
-        <h1 class="title" id="direction-label">Direction</h1>
+        <h1 class="title" id="direction-label">Heartbeat</h1>
 
-        <h2 class="value" id="direction-value">5</h2>
+        <h2 class="value" id="direction-value">0</h2>
       </div>
     </div>
     <div class="col-xs-12 col-sm-4 col-md-3">
@@ -50,7 +50,7 @@
       <div class="widget-number">
         <h1 class="title" id="distance-label">Distance</h1>
 
-        <h2 class="value" id="distance-value">10</h2>
+        <h2 class="value" id="distance-value">0</h2>
       </div>
     </div>
 
@@ -70,7 +70,24 @@
   });
 
   socket.on('car_data', function (msg) {
-    console.log('car_data: ' + msg);
+    switch(msg.action){
+      case 'heading':
+        $('#heading-value').text(msg.payload.deg.toFixed(0));
+        break;
+      case 'dist':
+        $('#distance-value').text(msg.payload.cm.toString());
+        break;
+
+      case 'move':
+        break;
+
+      case 'cc':
+        break;
+
+    }
+
+
+    console.log('car_data: ' + JSON.stringify(msg));
   });
 
 </script>
