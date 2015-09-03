@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row command_row">
     <div class="col-xs-12">
       <div class="btn-group" role="group" aria-label="direct commands">
         <button type="button" class="btn btn-default car_action" data="f">Forward</button>
@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row command_row">
     <div class="col-xs-3">
       Pattern commands:
     </div>
@@ -80,6 +80,8 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
+  var car = 'Turtle';
+
   socket.on('heartbeat', function (msg) {
     //console.log('heartbeat: ' + msg);
     $('#direction-value').text(msg);
@@ -101,19 +103,23 @@
         break;
 
     }
-
-    // console.log('car_data: ' + JSON.stringify(msg));
   });
 
+  function emmit_command(command) {
+    socket.emit('car_data_out', {car_name: car, command: command});
+    console.log('Command emitted ', command);
+  }
+
+  function get_pattern(){
+    return $('#pattern_1').val() + $('#pattern_2').val() + $('#pattern_3').val();
+  }
+
   $('.car_action').click(function (event) {
-    console.log("Action clicked ", $(event.target).attr("data"));
-    socket.emit('car_data_out', {car_name: 'Turtle', command: $(event.target).attr("data")});
+    emmit_command($(event.target).attr("data"));
   });
 
   $('.car_pat_action').click(function (event) {
-    var pattern = $('#pattern_1').val() + $('#pattern_2').val() + $('#pattern_3').val();
-    console.log("Pattern action clicked ", $(event.target).attr("data"),' pattrn='+pattern);
-    socket.emit('car_data_out', {car_name: 'Turtle', command: $(event.target).attr("data")+pattern});
+    emmit_command($(event.target).attr("data")+get_pattern());
   });
 
 
